@@ -10,20 +10,17 @@ class AppHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: DefaultTextStyle.merge(
-        style: TextStyle(color: Colors.white),
-        child: Container(
-          color: AppColours.blue,
-          width: double.infinity,
-          height: 300,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Profile(),
-              HeaderTimer(),
-            ],
-          ),
+    return DefaultTextStyle.merge(
+      style: TextStyle(color: Colors.white),
+      child: Container(
+        color: AppColours.blue,
+        width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Profile(),
+            HeaderTimer(),
+          ],
         ),
       ),
     );
