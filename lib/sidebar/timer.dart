@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timer/config/colors.dart';
+import 'package:flutter_timer/helpers.dart';
+import 'package:flutter_timer/models/timed_event.dart';
+import 'package:flutter_timer/services/timer_service.dart';
+import 'package:provider/provider.dart';
 
 class HeaderTimer extends StatelessWidget {
   const HeaderTimer({
@@ -8,6 +12,8 @@ class HeaderTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool timerActive = context.watch<TimerService>().timerActive;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -23,12 +29,29 @@ class HeaderTimer extends StatelessWidget {
             PauseButton(),
             SizedBox(width: 10),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('CLOCK STARTED AT 9:01 AM'),
+                if (timerActive) ...[
+                  Builder(builder: (context) {
+                    TimedEvent event =
+                        context.watch<TimerService>().activeEvent;
+                    DateTime startTime = DateTime.parse(event.startTime);
+                    String h = padNumber(startTime.hour);
+                    String m = padNumber(startTime.minute);
+                    String s = padNumber(startTime.second);
+                    String startTimeString = "$h:$m:$s";
+
+                    return Text('CLOCK STARTED AT $startTimeString');
+                  })
+                ] else ...[
+                  Text('NO ACTIVE TIMER'),
+                ],
                 SizedBox(height: 5),
                 Expanded(
                   child: Text(
-                    '01:24:17',
+                    timerActive
+                        ? context.watch<TimerService>().currentTime
+                        : '00:00:00',
                     style: TextStyle(
                       fontSize: 55,
                       fontWeight: FontWeight.w200,
@@ -52,17 +75,23 @@ class PauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: 70,
-        width: 70,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: AppColours.blue,
-        ),
-        child: Icon(
-          Icons.pause,
-          size: 40,
-          color: Colors.white,
-        ));
+    return InkWell(
+      onTap: () {
+        context.read<TimerService>().stop();
+        Navigator.of(context).pop();
+      },
+      child: Container(
+          height: 70,
+          width: 70,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(4),
+            color: AppColours.blue,
+          ),
+          child: Icon(
+            Icons.pause,
+            size: 40,
+            color: Colors.white,
+          )),
+    );
   }
 }

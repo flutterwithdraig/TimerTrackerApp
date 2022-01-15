@@ -20,7 +20,9 @@ class EventList extends StatelessWidget {
       color: Colors.white,
       child: ListView.separated(
         shrinkWrap: true,
-        separatorBuilder: (context, index) => Divider(),
+        separatorBuilder: (context, index) => Divider(
+          height: 1,
+        ),
         itemCount: timedEvents.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
@@ -35,7 +37,9 @@ class EventList extends StatelessWidget {
                     icon: Icon(
                       Icons.add_circle_outline,
                       size: 35,
-                      color: AppColours.blue,
+                      color: context.watch<TimerService>().timerActive
+                          ? AppColours.grey
+                          : AppColours.blue,
                     ),
                   ),
                 ),
