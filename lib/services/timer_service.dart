@@ -76,13 +76,13 @@ class TimerService with ChangeNotifier {
     _timedEvents.add(newEvent);
     notifyListeners();
 
+    _seconds = 0;
     startTimer();
 
     save();
   }
 
   void startTimer() {
-    _seconds = 0;
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _seconds++;
       notifyListeners();
@@ -108,5 +108,23 @@ class TimerService with ChangeNotifier {
     _timedEvents.removeWhere((e) => e.id == id && e.active == false);
     notifyListeners();
     save();
+  }
+
+  void edit(int id, String title) {
+    TimedEvent updatedEvent =
+        _timedEvents.firstWhere((e) => e.id == id).copyWith(title: title);
+    int index = _timedEvents.indexWhere((e) => e.id == id);
+    _timedEvents[index] = updatedEvent;
+    notifyListeners();
+    save();
+  }
+
+  void clearAllData() {
+    if (timer != null && timer!.isActive) {
+      timer!.cancel();
+    }
+    _timedEvents = [];
+    save();
+    notifyListeners();
   }
 }

@@ -75,9 +75,15 @@ class PauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isActive = context.watch<TimerService>().timerActive;
+
     return InkWell(
       onTap: () {
-        context.read<TimerService>().stop();
+        if (isActive) {
+          context.read<TimerService>().stop();
+        } else {
+          context.read<TimerService>().addNew();
+        }
         Navigator.of(context).pop();
       },
       child: Container(
@@ -88,7 +94,7 @@ class PauseButton extends StatelessWidget {
             color: AppColours.blue,
           ),
           child: Icon(
-            Icons.pause,
+            isActive ? Icons.pause : Icons.play_arrow,
             size: 40,
             color: Colors.white,
           )),
